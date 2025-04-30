@@ -1,0 +1,12 @@
+[project]
+name = "mcpscrapingtutorial"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "langchain-anthropic>=0.3.12",
+    "langchain-mcp-adapters>=0.0.9",
+    "langgraph>=0.4.1",
+    "python-dotenv>=1.1.0",
+]
