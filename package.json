@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@brightdata/mcp": "^2.4.1"
+  }
+}
