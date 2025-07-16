@@ -24,7 +24,7 @@ class AgentSession(BaseModel):
     status: Optional[str] = None
 
 class BrightDataTool(BaseModel):
-    """Modelo base para herramientas BrightData"""
+    """Base model for BrightData tools"""
     name: str
     description: str
     parameters: Dict[str, Any]
@@ -36,17 +36,17 @@ class BrightDataTool(BaseModel):
                 return await self.executor(**kwargs)
             else:
                 return self.executor(**kwargs)
-        raise NotImplementedError("No executor definido para esta herramienta.")
+        raise NotImplementedError("No executor defined for this tool.")
 
 class OpenAIAgent:
-    """Agente principal con OpenAI y herramientas BrightData"""
+    """Main agent with OpenAI and BrightData tools"""
     def __init__(self, model: str, tools: List[BrightDataTool]):
         from llm.openai_client import OpenAIClient
         self.client = OpenAIClient(model=model)
         self.tools = {tool.name: tool for tool in tools}
 
     async def chat(self, messages: List[Dict[str, Any]]) -> str:
-        # Convert tools to OpenAI function format
+        """Convert tools to OpenAI function format"""
         functions = []
         for tool in self.tools.values():
             functions.append({
