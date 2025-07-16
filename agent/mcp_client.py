@@ -3,18 +3,18 @@ import os
 from typing import List, Dict, Any, Optional
 
 class MCPClient:
-    """Cliente MCP nativo usando stdio para comunicación con procesos externos."""
+    """Native MCP client using stdio for communication with external processes."""
     def __init__(self, command: List[str], env: Optional[Dict[str, str]] = None):
         self.command = command
         self.env = env or os.environ.copy()
-        # Asegura que el PATH correcto esté presente para encontrar 'npx'
+        # make sure PATH is set to find npx
         self.env["PATH"] = os.environ.get("PATH", "")
         self.process = None
 
     async def connect(self):
-        """Lanza el proceso MCP y prepara la comunicación stdio."""
-        print(f"[MCPClient] Lanzando proceso: {' '.join(self.command)}")
-        print(f"[MCPClient] PATH usado: {self.env.get('PATH')}")
+        """Launch the mcp process and prepare stdio communication."""
+        print(f"[MCPClient] Launching process: {' '.join(self.command)}")
+        print(f"[MCPClient] PATH used: {self.env.get('PATH')}")
         try:
             self.process = await asyncio.create_subprocess_exec(
                 *self.command,
@@ -23,13 +23,13 @@ class MCPClient:
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
             )
-            print("[MCPClient] Proceso MCP lanzado correctamente.")
+            print("[MCPClient] mcp process started successfully.")
             
             # Initialize MCP connection
             await self._initialize()
             
         except Exception as e:
-            print(f"[MCPClient][ERROR] No se pudo lanzar el proceso MCP: {e}")
+            print(f"[MCPClient][ERROR] mcp process failed to start: {e}")
             raise
     
     async def _initialize(self):
@@ -62,10 +62,10 @@ class MCPClient:
             raise
 
     async def send_mcp_request(self, method: str, params: Dict[str, Any] = None) -> Any:
-        """Envía una solicitud MCP usando el protocolo JSON-RPC."""
+        """Send an MCP request using the JSON-RPC protocol."""
         import json
         if not self.process:
-            raise RuntimeError("MCPClient no conectado. Llama connect() primero.")
+            raise RuntimeError("MCPClient not connected. Call connect() first.")
         
         request = {
             "jsonrpc": "2.0",
@@ -81,12 +81,12 @@ class MCPClient:
         try:
             line = await asyncio.wait_for(self.process.stdout.readline(), timeout=30.0)
         except asyncio.TimeoutError:
-            print(f"[MCPClient][ERROR] Timeout: El proceso MCP no respondió en 30 segundos para {method}.")
+            print(f"[MCPClient][ERROR] Timeout: mcp process did not respond in 30 seconds for {method}.")
             try:
                 err_output = await self.process.stderr.read()
-                print(f"[MCPClient][STDERR] Salida de error del proceso MCP:\n{err_output.decode(errors='replace')}")
+                print(f"[MCPClient][STDERR] mcp process error output:\n{err_output.decode(errors='replace')}")
             except Exception as e:
-                print(f"[MCPClient][STDERR] No se pudo leer el stderr: {e}")
+                print(f"[MCPClient][STDERR] could not read stderr: {e}")
             return None
 
         if not line:
@@ -95,14 +95,14 @@ class MCPClient:
         try:
             response = json.loads(line.decode())
             if "error" in response:
-                raise Exception(f"Error en MCP {method}: {response['error']}")
+                raise Exception(f"mcp error in {method}: {response['error']}")
             return response.get("result")
         except json.JSONDecodeError as e:
-            print(f"[MCPClient][ERROR] Respuesta no válida de MCP: {line.decode()}")
+            print(f"[MCPClient][ERROR] invalid mcp response: {line.decode()}")
             return None
 
     async def call_tool(self, name: str, arguments: Dict[str, Any]) -> Any:
-        """Llama una herramienta MCP."""
+        """Call an mcp tool."""
         return await self.send_mcp_request("tools/call", {
             "name": name,
             "arguments": arguments
