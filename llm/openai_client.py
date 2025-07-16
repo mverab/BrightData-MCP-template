@@ -14,7 +14,7 @@ class CompletionResult(BaseModel):
     tool_calls: Optional[List] = None
 
 class OpenAIClient:
-    def __init__(self, model: str = "gpt-4o"):
+    def __init__(self, model: str = "gpt-4.1-2025-04-14"):
         api_key = os.getenv("OPENAI_API_KEY")
         self.client = AsyncOpenAI(api_key=api_key)
         self.model = model

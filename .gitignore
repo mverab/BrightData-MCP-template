@@ -2,4 +2,6 @@
 node_modules
 .env
 
-.
+CLAUDE.md
+
+.claude/
