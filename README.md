@@ -1,3 +1,5 @@
+[![Thordata Residential Proxies - Fast & Reliable IPs](./fef1680a-fbbb-4096-b40b-b69402cae52c.png)](https://dashboard.thordata.com/register?invitation_code=RZXYJQ1)
+
 # BrightData Pain Extractor Agent
 
 This project provides a conversational agent powered by LangChain, LangGraph, and OpenAI that leverages BrightData's web scraping and data extraction tools. You can interact with the agent in your terminal to perform various web data tasks.
